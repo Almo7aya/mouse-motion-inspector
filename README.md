@@ -97,7 +97,9 @@ gh workflow run ci.yml --ref main
 
 It builds/tests on Windows, renders chart, guide and About previews, and packages
 both Windows builds plus source. Pushes and pull requests do not start CI.
-CI does not automatically publish a release. Packages are currently unsigned.
+CI does not automatically publish a release. The separate **Manual release**
+workflow publishes packages from a successful build when explicitly started.
+Packages are currently unsigned.
 
 Automated checks cover data handling and chart rendering. Physical-device behavior,
 clean-machine installation and display scaling require the [manual release checks](docs/release-checklist.md).

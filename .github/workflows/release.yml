@@ -1,0 +1,62 @@
+name: Manual release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag (for example v1.0.0)
+        required: true
+        type: string
+      build_run_id:
+        description: Successful Manual build and packages run for the tagged commit
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ inputs.tag }}
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag }}
+          persist-credentials: false
+      - name: Publish packages from the tested commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          BUILD_RUN_ID: ${{ inputs.build_run_id }}
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$BUILD_RUN_ID" =~ ^[0-9]+$ ]]
+          release_sha=$(git rev-parse HEAD)
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN_ID" > build-run.json
+          jq -e --arg sha "$release_sha" --arg repo "$GITHUB_REPOSITORY" '
+            .status == "completed" and .conclusion == "success" and
+            .event == "workflow_dispatch" and .path == ".github/workflows/ci.yml" and
+            .head_sha == $sha and .head_repository.full_name == $repo
+          ' build-run.json
+          gh run download "$BUILD_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name MouseMotionInspector-win-x64 --dir release-assets
+          version=${RELEASE_TAG#v}
+          assets=(
+            "release-assets/MouseMotionInspector-$version-win-x64-self-contained.zip"
+            "release-assets/MouseMotionInspector-$version-win-x64-self-contained.zip.sha256"
+            "release-assets/MouseMotionInspector-$version-win-x64-framework-dependent.zip"
+            "release-assets/MouseMotionInspector-$version-win-x64-framework-dependent.zip.sha256"
+            "release-assets/MouseMotionInspector-source.zip"
+            "release-assets/MouseMotionInspector-source.zip.sha256"
+          )
+          for asset in "${assets[@]}"; do test -s "$asset"; done
+          gh release create "$RELEASE_TAG" "${assets[@]}" --repo "$GITHUB_REPOSITORY" \
+            --verify-tag --title "Mouse Motion Inspector $version" \
+            --notes-file "docs/releases/$RELEASE_TAG.md" --draft
+          gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --draft=false --latest
