@@ -1,10 +1,14 @@
 # Mouse Motion Inspector
 
+[![Manual build](https://github.com/Almo7aya/mouse-motion-inspector/actions/workflows/ci.yml/badge.svg?branch=main&event=workflow_dispatch)](https://github.com/Almo7aya/mouse-motion-inspector/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/Almo7aya/mouse-motion-inspector)](https://github.com/Almo7aya/mouse-motion-inspector/releases/latest)
+[![MIT license](https://img.shields.io/github/license/Almo7aya/mouse-motion-inspector)](LICENSE)
+[![Windows x64](https://img.shields.io/badge/platform-Windows%20x64-0078D4)](#run)
+[![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+
 Find which Windows mouse interface is sending movement, then compare controlled
 tests across surfaces, DPI settings and connections. A local, open-source utility
 for investigating pointer drift and jitter, with no account or cloud service.
-
-**Windows x64 · .NET 10 · MIT**
 
 [Download](https://github.com/Almo7aya/mouse-motion-inspector/releases/latest) ·
 [Report a bug](https://github.com/Almo7aya/mouse-motion-inspector/issues/new?template=bug_report.yml) ·
