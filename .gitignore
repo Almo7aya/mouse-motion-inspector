@@ -1,0 +1,14 @@
+artifacts/
+native/**/bin/
+native/**/obj/
+.dotnet/
+**/recordings/
+mouse-device-summary-*.csv
+mouse-device-tests-*.json
+mouse-tests-*.json
+mouse-motion-*.png
+*.user
+*.suo
+.vs/
+.idea/
+*.tmp

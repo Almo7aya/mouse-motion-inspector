@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><PlatformTarget>x64</PlatformTarget><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../MouseMotionInspector.Core/MouseMotionInspector.Core.csproj" /><Compile Include="../MouseMotionInspector.Native/NativeMethods.cs" Link="NativeMethods.cs" /><Compile Include="../MouseMotionInspector.Native/TraceSelection.cs" Link="TraceSelection.cs" /></ItemGroup>
+</Project>

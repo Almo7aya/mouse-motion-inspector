@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1115">
+  <title>Mouse Motion Inspector — Browser tester</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0d1115;--panel:#151b21;--line:#2c353e;--muted:#99a9b7;--text:#ecf2f6;--green:#c2f970;--cyan:#6ddbd6;--amber:#ffcf7a;--red:#ff9696;font-family:Inter,Segoe UI,Arial,sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}button,input,select,textarea{font:inherit}button,a,input,select,textarea,summary{outline-offset:4px}button{cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--green)}
+    .shell{max-width:1520px;margin:auto;padding:30px 36px 48px}header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:25px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:13px}.brand-mark{width:37px;height:37px;border:1px solid var(--green);border-radius:50%;position:relative}.brand-mark:before,.brand-mark:after{content:"";position:absolute;background:var(--green)}.brand-mark:before{width:17px;height:1px;left:9px;top:17px}.brand-mark:after{height:17px;width:1px;left:17px;top:9px}.brand-name{font-size:25px;font-weight:650;letter-spacing:-1px}.brand-sub{font-size:11px;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase;margin-left:12px}.local{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}.dot{width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block}
+    .intro{display:flex;justify-content:space-between;gap:20px;align-items:end;margin:28px 0 25px}h1{font-size:32px;line-height:1.2;letter-spacing:-1px;margin:0 0 9px;font-weight:600}.intro p{color:var(--muted);margin:0;max-width:740px}.step-label,.eyebrow{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.6px;color:var(--muted)}.step-label{color:var(--green);margin-bottom:9px}.key-hint{font-size:12px;white-space:nowrap;color:var(--muted)}kbd{font-family:inherit;font-size:11px;border:1px solid #43505b;background:#20272e;border-radius:4px;padding:2px 6px;color:var(--text)}
+    .layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:20px;align-items:start}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px}.setup{padding:22px}.panel-title{font-size:15px;font-weight:600;margin:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--line)}fieldset{border:0;padding:0;margin:18px 0 0;min-width:0}label{display:block;font-size:12px;color:#c1cdd7;margin-bottom:6px}input,select,textarea{color:var(--text);background:#0f151a;border:1px solid #37434f;border-radius:6px;width:100%;padding:9px 10px;min-height:39px}input::placeholder,textarea::placeholder{color:#7f909e}textarea{resize:vertical;min-height:63px}.field{margin-bottom:14px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hint{font-size:11px;color:var(--muted);margin:6px 0 0;line-height:1.6}.divider{height:1px;background:var(--line);margin:18px 0}.btn{padding:9px 13px;border:1px solid #3e4b57;border-radius:6px;background:#202a33;color:var(--text);font-size:12px;font-weight:600}.btn:hover:enabled{background:#2b3945}.btn.primary{background:var(--green);color:#172008;border-color:var(--green);font-size:14px}.btn.primary:hover:enabled{background:#d4ff96}.btn.wide{width:100%;padding:12px}.btn.danger{color:var(--red)}.setup-actions{display:grid;gap:9px}.capture-hint{min-height:49px}.main{min-width:0;display:grid;gap:16px}.status{padding:16px 21px;display:flex;gap:16px;align-items:center;justify-content:space-between;background:#18201d;border-color:#364533}.status-copy{display:flex;gap:13px;align-items:center}.status-symbol{width:33px;height:33px;border-radius:50%;background:#283323;display:grid;place-items:center;color:var(--green);font-size:16px}.status strong{font-size:14px;font-weight:600}.status p{color:var(--muted);font-size:12px;margin:2px 0 0}.timer{font-variant-numeric:tabular-nums;font-size:27px;line-height:1;letter-spacing:-1px;white-space:nowrap}.timer small{font-size:12px;color:var(--muted);letter-spacing:0}.progress{height:3px;margin-top:-17px;background:transparent;z-index:1;border-radius:0 0 12px 12px;overflow:hidden}.progress div{height:100%;width:0;background:var(--green);transition:width .15s linear}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric{padding:17px 18px;min-width:0}.metric .value{font-size:27px;letter-spacing:-.6px;margin:5px 0 1px;font-variant-numeric:tabular-nums;font-weight:600}.metric .unit{font-size:11px;color:var(--muted)}.metric:first-child .value{color:var(--green)}.chart-layout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:16px}.trace-panel{min-width:0;overflow:hidden}.chart-toolbar{display:flex;gap:12px;align-items:center}.chart-toolbar select{width:100px;min-height:28px;font-size:11px;padding:3px 6px}.tag{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:3px 6px;white-space:nowrap}.plot{height:330px;position:relative;background:#10161b}canvas{display:block;width:100%;height:100%}.plot-empty{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--muted);font-size:12px;gap:5px}.plot-empty strong{color:#d0dbe3;font-size:14px;font-weight:500}.plot-caption{font-size:11px;color:var(--muted);padding:12px 18px;display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line)}.legend-dot{display:inline-block;border-radius:50%;height:6px;width:6px;margin-right:5px}.legend-dot.start{background:var(--cyan)}.legend-dot.end{background:var(--green)}.direction{padding:19px}.compass{width:156px;height:156px;margin:16px auto 10px;position:relative;border-radius:50%;border:1px solid var(--line);background:radial-gradient(circle,transparent 29%,#2c353e 30%,transparent 31%,transparent 57%,#2c353e 58%,transparent 59%)}.compass:before,.compass:after{content:"";position:absolute;background:var(--line)}.compass:before{width:100%;height:1px;top:50%}.compass:after{height:100%;width:1px;left:50%}.compass span{position:absolute;font-size:10px;color:var(--muted);z-index:1;background:var(--panel);padding:0 3px}.compass .up{top:-8px;left:50%;transform:translateX(-50%)}.compass .down{bottom:-8px;left:50%;transform:translateX(-50%)}.compass .left{left:-6px;top:calc(50% - 8px)}.compass .right{right:-6px;top:calc(50% - 8px)}.needle{position:absolute;left:50%;top:50%;height:2px;width:55px;background:var(--green);transform-origin:0 50%;z-index:2;opacity:0}.needle:after{content:"";position:absolute;right:0;top:-3px;width:6px;height:6px;border-top:2px solid var(--green);border-right:2px solid var(--green);transform:rotate(45deg)}.direction-name{text-align:center;font-weight:600;color:var(--green);margin:15px 0;font-size:13px}.readout{display:flex;justify-content:space-between;font-size:12px;border-top:1px solid var(--line);padding:8px 0;gap:8px}.readout span{color:var(--muted)}.readout b{font-weight:500;font-variant-numeric:tabular-nums}.timeline{height:110px;padding:12px 16px 0}.timeline-footer{font-size:11px;color:var(--muted);padding:0 20px 12px;display:flex;justify-content:space-between}.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.event-wrap{max-height:205px;overflow:auto;min-height:100px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;white-space:nowrap;text-align:left;font-size:12px}th{font-size:10px;text-transform:uppercase;letter-spacing:.7px;font-weight:500;color:var(--muted);background:#192129}td,th{padding:10px 14px;border-bottom:1px solid var(--line)}tbody tr:last-child td{border-bottom:0}td.num{font-variant-numeric:tabular-nums;font-family:Consolas,monospace}td.empty{text-align:center;padding:30px 16px;color:var(--muted);white-space:normal}.directions{padding:12px 20px;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}.direction-row{display:grid;grid-template-columns:36px 1fr 27px;align-items:center;gap:7px;font-size:11px;color:var(--muted)}.bar-bg{background:#27313b;height:4px;border-radius:3px}.bar{height:100%;width:0;background:var(--cyan);border-radius:3px}.direction-row b{font-variant-numeric:tabular-nums;font-weight:400;text-align:right}.insight{padding:12px 20px 16px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}.history{margin-top:22px}.history .panel-head{flex-wrap:wrap}.history-actions{display:flex;gap:8px;flex-wrap:wrap}.history tbody tr.selected{background:#222f28}.history tbody tr:hover{background:#202b34}.history small{display:block;color:var(--muted);font-size:10px}.history .select-run{background:transparent;border:0;color:var(--cyan);font:inherit;padding:0;text-align:left;cursor:pointer;max-width:220px;white-space:normal;overflow-wrap:anywhere}.history .remove-run{border:0;background:transparent;color:var(--muted);font-size:16px}.storage{padding:10px 20px;color:var(--muted);font-size:11px;border-top:1px solid var(--line)}.message{padding:11px 15px;border:1px solid #665234;background:#2b251b;color:var(--amber);border-radius:8px;font-size:12px;margin:0 0 18px}.message[hidden]{display:none}details{margin-top:20px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:12px}summary{cursor:pointer;color:#c1cdd7;font-size:13px}details .guide{display:grid;grid-template-columns:1fr 1fr;gap:36px;padding:12px 0}details h3{color:var(--text);font-size:13px;font-weight:500}details li{margin:7px 0}details a{color:var(--cyan)}footer{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:20px;margin-top:22px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+    @media(min-width:1400px){.plot{height:360px}.layout{grid-template-columns:300px minmax(0,1fr)}}@media(max-width:1050px){.shell{padding:24px}.chart-layout{grid-template-columns:minmax(0,1fr) 185px}.direction{padding:16px 12px}.compass{width:134px;height:134px}.metric{padding:13px 12px}.metric .value{font-size:24px}.brand-sub{display:none}.key-hint{display:none}.details-grid{grid-template-columns:1fr}}@media(max-width:800px){.layout{grid-template-columns:1fr}.setup form{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.setup fieldset{margin-top:15px}.setup-actions{grid-column:1/-1;grid-template-columns:2fr 1fr}.setup .divider{display:none}.setup .form-foot{grid-column:1/-1}.intro{margin:24px 0}h1{font-size:27px}.chart-layout{grid-template-columns:minmax(0,1fr) 195px}.details-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.shell{padding:18px 14px}.local{font-size:10px}header{gap:10px}.metrics{grid-template-columns:1fr 1fr;gap:9px}.chart-layout,.details-grid{grid-template-columns:1fr}.direction{display:none}.plot{height:290px}.panel-head{padding:14px}.chart-toolbar{gap:6px}.chart-toolbar .tag{display:none}.setup{padding:17px}.setup form{grid-template-columns:1fr}.setup-actions{grid-template-columns:1fr 1fr}.status{padding:13px}.status-symbol{display:none}.timer{font-size:23px}details .guide{grid-template-columns:1fr;gap:0}.plot-caption{flex-wrap:wrap}footer{flex-direction:column;gap:4px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header><div class="brand"><div class="brand-mark" aria-hidden="true"></div><div><span class="brand-name">Mouse Motion Inspector</span><span class="brand-sub">Browser tester</span></div></div><div class="local"><span class="dot"></span>Offline · stays on this device</div></header>
+  <div class="intro"><div><div class="step-label">A quiet mouse should leave a quiet trace</div><h1>Catch the smallest movement.</h1><p>Leave your mouse untouched. Record the drift. Compare surfaces and DPI, one change at a time.</p></div><div class="key-hint"><kbd>S</kbd> start &nbsp; <kbd>Esc</kbd> stop</div></div>
+  <div id="message" class="message" role="alert" hidden></div>
+  <div class="layout">
+    <aside class="panel setup">
+      <h2 class="panel-title">Set up a test</h2>
+      <form id="testForm">
+        <fieldset id="conditions"><legend class="sr-only">Test conditions</legend>
+          <div class="field"><label for="surface">Surface / mouse pad</label><input id="surface" maxlength="100" required placeholder="e.g. black cloth pad" value="Cloth pad"></div>
+          <div class="two"><div class="field"><label for="dpi">DPI</label><input id="dpi" type="number" min="1" max="100000" step="1" placeholder="e.g. 800"></div><div class="field"><label for="polling">Polling rate (Hz)</label><input id="polling" type="number" min="1" max="32000" step="1" placeholder="Optional"></div></div>
+          <div class="field"><label for="connection">Connection</label><select id="connection"><option>Wireless</option><option>Wired</option><option>Other / unknown</option></select></div>
+          <div class="field"><label for="notes">Notes</label><textarea id="notes" maxlength="1000" placeholder="Sensor cleaned, skates, desk vibration…"></textarea></div>
+          <p class="hint">DPI and polling rate are labels you enter. This app cannot read or change your mouse settings.</p>
+        </fieldset>
+        <fieldset id="captureSettings"><legend class="sr-only">Capture settings</legend><div class="divider"></div>
+          <div class="field"><label for="mode">Capture mode</label><select id="mode"><option value="cursor">Visible cursor</option><option value="raw">Locked · unadjusted requested</option><option value="locked">Locked · standard</option></select><p id="captureHint" class="hint capture-hint">Measures the visible cursor in CSS pixels. Keep it inside this window, away from its edges.</p></div>
+          <div class="two"><div class="field"><label for="duration">Record (seconds)</label><input id="duration" type="number" min="5" max="600" step="1" value="60" required></div><div class="field"><label for="settle">Settle (seconds)</label><input id="settle" type="number" min="3" max="60" step="1" value="5" required></div></div>
+        </fieldset>
+        <div class="setup-actions"><button id="start" class="btn primary wide" type="submit">Start test <span aria-hidden="true">↗</span></button><button id="stop" class="btn wide" type="button" disabled>Stop / save · Esc</button></div>
+        <p class="hint form-foot">Start, place the mouse, then take your hand off during the countdown. The test ends automatically. Use Esc to stop without touching the mouse.</p>
+      </form>
+    </aside>
+    <main class="main">
+      <section class="panel status" aria-label="Recording status"><div class="status-copy"><div class="status-symbol" id="statusSymbol" aria-hidden="true">○</div><div><strong id="statusTitle" role="status">Ready when you are</strong><p id="statusDetail">Choose a surface and enter your current DPI to begin.</p></div></div><div class="timer"><span id="timer">60.0</span> <small>s</small></div></section>
+      <div class="progress" aria-hidden="true"><div id="progress"></div></div>
+      <section class="metrics" aria-label="Measurements">
+        <div class="panel metric"><div class="eyebrow">Movement events</div><div id="eventCount" class="value">0</div><div class="unit">Every nonzero event counts</div></div>
+        <div class="panel metric"><div class="eyebrow">Total travel</div><div id="travel" class="value">0</div><div class="unit" id="travelUnit">CSS pixels · all steps added</div></div>
+        <div class="panel metric"><div class="eyebrow">Net displacement</div><div id="net" class="value">0</div><div class="unit" id="netUnit">CSS pixels · start to finish</div></div>
+        <div class="panel metric"><div class="eyebrow">Farthest from start</div><div id="excursion" class="value">0</div><div class="unit" id="excursionUnit">CSS pixels · peak excursion</div></div>
+      </section>
+      <div class="chart-layout">
+        <section class="panel trace-panel"><div class="panel-head"><h2 class="panel-title">Movement trace</h2><div class="chart-toolbar"><span id="modeTag" class="tag">Visible cursor</span><label class="sr-only" for="zoom">Trace scale</label><select id="zoom"><option value="auto">Auto fit</option><option value="1">1×</option><option value="10">10×</option><option value="25">25×</option><option value="50">50×</option></select></div></div>
+          <div class="plot"><canvas id="trace" aria-label="Movement trace. Positive X is right; positive Y is down."></canvas><div id="plotEmpty" class="plot-empty"><strong>A little movement tells a story.</strong><span>Your trace will appear here.</span></div></div>
+          <div class="plot-caption"><span><span class="legend-dot start"></span>Start &nbsp; <span class="legend-dot end"></span>Current / end</span><span id="scaleLabel">Grid: 1 CSS px · right +X / down +Y</span></div>
+        </section>
+        <section class="panel direction"><h2 class="panel-title">Net direction</h2><div class="compass" aria-hidden="true"><span class="up">UP</span><span class="down">DOWN</span><span class="left">L</span><span class="right">R</span><div id="needle" class="needle"></div></div><div id="directionName" class="direction-name">No displacement</div><div class="readout"><span>ΔX</span><b id="deltaX">0</b></div><div class="readout"><span>ΔY</span><b id="deltaY">0</b></div><div class="readout"><span>First movement</span><b id="firstMove">—</b></div><div class="readout"><span>Largest step</span><b id="largestStep">0</b></div></section>
+      </div>
+      <section class="panel"><div class="panel-head"><h2 class="panel-title">Activity over time</h2><span class="tag">Travel per second</span></div><div class="timeline"><canvas id="timeline" aria-label="Bar chart of movement distance in each second of the recording"></canvas></div><div class="timeline-footer"><span>0 s</span><span id="timelinePeak">No movement recorded</span><span id="timelineEnd">60 s</span></div></section>
+      <div class="details-grid">
+        <section class="panel"><div class="panel-head"><h2 class="panel-title">Latest movements</h2><span class="tag">Last 30 events</span></div><div class="event-wrap"><table><thead><tr><th>Time (s)</th><th>ΔX</th><th>ΔY</th><th>Direction</th></tr></thead><tbody id="eventLog"><tr><td colspan="4" class="empty">Waiting for a recording.</td></tr></tbody></table></div></section>
+        <section class="panel"><div class="panel-head"><h2 class="panel-title">Step directions</h2><span class="tag">Event counts</span></div><div id="directionBars" class="directions"></div><div id="insight" class="insight">Back-and-forth jitter can have zero net displacement. Total travel still captures those steps.</div></section>
+      </div>
+    </main>
+  </div>
+  <section class="panel history"><div class="panel-head"><div><h2 class="panel-title">Compare your tests <span id="runCount" class="tag">0 runs</span></h2><p class="hint">Select a run to inspect its trace. Compare equal durations using the same capture mode.</p></div><div class="history-actions"><button id="exportJSON" class="btn" disabled>Export all · JSON</button><button id="exportCSV" class="btn" disabled>Summary · CSV</button><button id="exportEvents" class="btn" disabled>Selected events · CSV</button></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Run / surface</th><th>DPI</th><th>Connection</th><th>Mode / units</th><th>Recorded</th><th>Events</th><th>Events / s</th><th>Travel</th><th>Travel / s</th><th>Net</th><th>Peak</th><th>Result</th><th><span class="sr-only">Delete</span></th></tr></thead><tbody id="runList"><tr><td colspan="13" class="empty">No tests yet. Try your current pad first, then change just the surface or DPI.</td></tr></tbody></table></div>
+    <div id="storageStatus" class="storage" role="status">Completed tests are saved in this browser. Export JSON to keep a portable copy of all movement samples.</div>
+  </section>
+  <details><summary>How to test, and what these measurements mean</summary><div class="guide"><div><h3>A useful comparison</h3><ol><li>Keep the browser, Windows pointer speed, acceleration setting, and polling rate unchanged. Disconnect other pointing devices if possible.</li><li>Enter the surface and actual DPI from Synapse. Run a 60-second test without touching the mouse or desk.</li><li>Repeat 2–3 times, then try another surface at the same DPI. After that, compare DPI settings on the same surface.</li><li>Do not change DPI or lift the mouse during a recording. Stop and start a new run. Mark accidental touches in your notes before repeating.</li><li>Export all tests as JSON to share the complete record. CSV summaries are convenient for a spreadsheet.</li></ol><p>Higher DPI can amplify the same physical movement. Compare repeatability and timing as well as travel; these numbers alone cannot diagnose a faulty sensor.</p></div><div><h3>Browser measurements, with clear limits</h3><ul><li><b>Visible cursor:</b> changes in clientX/clientY, in CSS pixels. OS acceleration and pointer speed apply. Capture stops if the cursor leaves the page, the window loses focus, or the tab is hidden.</li><li><b>Locked modes:</b> the cursor is hidden and movement is not limited by screen edges. “Unadjusted requested” asks the browser to bypass OS acceleration; support varies and cannot be independently verified here. Failure is reported without switching modes.</li><li>Locked movement uses browser-reported units. These are not guaranteed hardware counts, millimetres, or CSS pixels. Do not compare their distances directly with visible-cursor tests.</li><li>The browser may merge or omit movement reports. Event rate is <b>not USB polling rate</b>. No detected motion means only that no nonzero movement reached this page. Other mice, a touchpad, or software can also move the pointer.</li><li>No nonzero-event threshold or smoothing is applied to recorded samples. Long traces are simplified for drawing only. A run stops at 100,000 samples; exports contain every recorded sample.</li></ul><p>API references: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API" target="_blank" rel="noopener noreferrer">Pointer Lock</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/movementX" target="_blank" rel="noopener noreferrer">Movement units</a>.</p></div></div></details>
+  <footer><span>Mouse Motion Inspector / Browser tester · v1.0</span><span>No account. No network requests. Your recordings stay here until you export them.</span></footer>
+</div>
+<script>
+'use strict';
+// Kept independent of the DOM so capture arithmetic and exports can be checked with Node.
+const Lab = (() => {
+  const directions = ['Right','Down-right','Down','Down-left','Left','Up-left','Up','Up-right'];
+  const modeNames = {cursor:'Visible cursor',raw:'Locked · unadjusted requested',locked:'Locked · standard'};
+  const SAMPLE_LIMIT = 100000;
+  function directionIndex(dx,dy) { return ((Math.round(Math.atan2(dy,dx)/(Math.PI/4))%8)+8)%8; }
+  function direction(dx,dy) { return dx===0 && dy===0 ? 'No displacement' : directions[directionIndex(dx,dy)]; }
+  function makeRun(settings, date=new Date().toISOString()) {
+    return {id:globalThis.crypto?.randomUUID?.() || Date.now().toString(36)+'-'+Math.random().toString(36).slice(2),startedAt:date,settings:{...settings},mode:settings.mode,modeLabel:modeNames[settings.mode],unit:settings.mode==='cursor'?'CSS px':'browser units',elapsedMs:0,stopReason:'',completed:false,samples:[],buckets:[],x:0,y:0,travel:0,peak:0,largest:0,firstMs:null,directions:Array(8).fill(0),minX:0,maxX:0,minY:0,maxY:0,environment:{userAgent:globalThis.navigator?.userAgent || '',devicePixelRatio:globalThis.devicePixelRatio || 1,viewport:{width:globalThis.innerWidth || 0,height:globalThis.innerHeight || 0}},capture:{eventType:'mousemove',unadjustedRequested:settings.mode==='raw',unadjustedVerified:false,lockPromiseAPI:null,originClient:null,timestamp:'DOM event timestamp when available; otherwise performance.now()',sampleColumns:['time_ms','dx','dy','x_from_start','y_from_start']}};
+  }
+  function addSample(run,t,dx,dy) {
+    if (![t,dx,dy].every(Number.isFinite) || t<0 || t>=run.settings.duration*1000 || (dx===0&&dy===0) || run.samples.length>=SAMPLE_LIMIT) return false;
+    // Preserve event order while protecting durations against inconsistent event clocks.
+    t=Math.max(t,run.samples.length?run.samples[run.samples.length-1][0]:0);
+    run.x+=dx;run.y+=dy;
+    const length=Math.hypot(dx,dy);
+    run.travel+=length;run.peak=Math.max(run.peak,Math.hypot(run.x,run.y));run.largest=Math.max(run.largest,length);
+    run.minX=Math.min(run.minX,run.x);run.maxX=Math.max(run.maxX,run.x);run.minY=Math.min(run.minY,run.y);run.maxY=Math.max(run.maxY,run.y);
+    if(run.firstMs===null)run.firstMs=t;
+    run.directions[directionIndex(dx,dy)]++;
+    const bucket=Math.floor(t/1000);if(!run.buckets[bucket])run.buckets[bucket]={count:0,travel:0};
+    run.buckets[bucket].count++;run.buckets[bucket].travel+=length;
+    run.samples.push([t,dx,dy,run.x,run.y]);return true;
+  }
+  function summary(run) {
+    const seconds=run.elapsedMs/1000;
+    return {id:run.id,started_at:run.startedAt,surface:run.settings.surface,dpi:run.settings.dpi,polling_hz_label:run.settings.polling,connection:run.settings.connection,capture_mode:run.modeLabel,units:run.unit,planned_seconds:run.settings.duration,recorded_seconds:seconds,completed:run.completed,stop_reason:run.stopReason,movement_events:run.samples.length,events_per_second:seconds?run.samples.length/seconds:0,total_travel:run.travel,travel_per_second:seconds?run.travel/seconds:0,net_distance:Math.hypot(run.x,run.y),net_x:run.x,net_y:run.y,net_direction:direction(run.x,run.y),peak_excursion:run.peak,largest_step:run.largest,first_movement_seconds:run.firstMs===null?null:run.firstMs/1000,notes:run.settings.notes};
+  }
+  function csvCell(value) {
+    if(value===null||value===undefined)return '""';
+    let text=String(value);
+    // Neutralize spreadsheet formulas in user-supplied strings, but keep numbers numeric.
+    if(typeof value==='string'&&/^[\s]*[=+\-@]/.test(text))text="'"+text;
+    return '"'+text.replaceAll('"','""')+'"';
+  }
+  function csv(rows) {return '\uFEFF'+rows.map(row=>row.map(csvCell).join(',')).join('\r\n');}
+  function summaryCSV(runs) { const list=runs.map(summary);return list.length?csv([Object.keys(list[0]),...list.map(Object.values)]):''; }
+  function eventsCSV(run) {return csv([['run_id','surface','dpi','capture_mode','units','time_ms','dx','dy','x_from_start','y_from_start','step_distance','direction'],...run.samples.map(s=>[run.id,run.settings.surface,run.settings.dpi,run.modeLabel,run.unit,...s,Math.hypot(s[1],s[2]),direction(s[1],s[2])])]);}
+  return {directions,modeNames,SAMPLE_LIMIT,makeRun,addSample,summary,direction,directionIndex,summaryCSV,eventsCSV};
+})();
+
+(() => {
+  const $=id=>document.getElementById(id);
+  const ui=Object.fromEntries(['testForm','conditions','captureSettings','surface','dpi','polling','connection','notes','mode','duration','settle','captureHint','start','stop','message','timer','statusTitle','statusDetail','statusSymbol','progress','eventCount','travel','net','excursion','travelUnit','netUnit','excursionUnit','modeTag','trace','timeline','plotEmpty','scaleLabel','zoom','needle','directionName','deltaX','deltaY','firstMove','largestStep','timelinePeak','timelineEnd','directionBars','eventLog','insight','runList','runCount','storageStatus','exportJSON','exportCSV','exportEvents'].map(id=>[id,$(id)]));
+  let phase='idle',active=null,selected=null,runs=[],settleEnd=0,startAt=0,finishAt=0,lastCursor=null,lockAttempt=0,requestTimer=null,dirty=true,lastRender=0,db=null;
+  let storageReady=false,storageAvailable=false;
+  const savedIds=new Set();
+  const number=(n,places=2)=>Number(n).toLocaleString(undefined,{maximumFractionDigits:places});
+  const signed=n=>(n>0?'+':'')+number(n);
+  const fmtTime=ms=>(ms/1000).toFixed(3);
+  const current=()=>active||selected;
+  const busy=()=>phase!=='idle';
+  function showMessage(message) {ui.message.textContent=message;ui.message.hidden=!message;}
+  function setStatus(title,detail,symbol='○'){ui.statusTitle.textContent=title;ui.statusDetail.textContent=detail;ui.statusSymbol.textContent=symbol;}
+  function setBusy(value){ui.conditions.disabled=value;ui.captureSettings.disabled=value;ui.start.disabled=value;ui.stop.disabled=!value;renderHistory();}
+  function updateExportButtons(){ui.exportJSON.disabled=busy()||!runs.length;ui.exportCSV.disabled=busy()||!runs.length;ui.exportEvents.disabled=busy()||!selected;}
+  function settings(){return {surface:ui.surface.value.trim(),dpi:ui.dpi.value?Number(ui.dpi.value):null,polling:ui.polling.value?Number(ui.polling.value):null,connection:ui.connection.value,notes:ui.notes.value.trim(),mode:ui.mode.value,duration:Number(ui.duration.value),settle:Number(ui.settle.value)};}
+  function updateModeHint(){ui.captureHint.textContent=ui.mode.value==='cursor'?'Measures the visible cursor in CSS pixels. Keep it inside this window, away from its edges.':ui.mode.value==='raw'?'Hides the cursor and requests movement without OS acceleration. Reported in browser units; support varies.':'Hides the cursor and removes screen-edge limits. OS-adjusted movement, in browser units.';}
+  ui.mode.addEventListener('change',updateModeHint);
+  ui.duration.addEventListener('input',()=>{if(!busy()&&!selected)ui.timer.textContent=number(Number(ui.duration.value),1);});
+
+  function arm(){
+    if(phase!=='requesting')return;
+    clearTimeout(requestTimer);phase='settling';settleEnd=performance.now()+active.settings.settle*1000;startAt=settleEnd;finishAt=startAt+active.settings.duration*1000;
+    setStatus('Set the mouse down. Hands off.',`Settling for ${active.settings.settle} seconds. Movement during this countdown is ignored.`,'◷');dirty=true;
+  }
+  function failStart(message){lockAttempt++;clearTimeout(requestTimer);phase='idle';active=null;setBusy(false);if(document.pointerLockElement===ui.trace)document.exitPointerLock();showMessage(message);setStatus('Could not start', 'Choose Visible cursor or another locked mode, then start again.');dirty=true;}
+  async function start(){
+    if(busy()||!ui.testForm.reportValidity())return;
+    if(!ui.surface.value.trim()){ui.surface.focus();showMessage('Give this surface a name so you can compare it later.');return;}
+    showMessage('');active=Lab.makeRun(settings());phase='requesting';setBusy(true);dirty=true;
+    if(active.mode==='cursor'){arm();return;}
+    if(!ui.trace.requestPointerLock){failStart('Pointer lock is unavailable here. Use Visible cursor, or open this file directly in a desktop browser.');return;}
+    const attempt=++lockAttempt;
+    setStatus('Waiting for pointer lock','Allow mouse capture if your browser asks. Press Esc to cancel.','◷');
+    requestTimer=setTimeout(()=>{if(phase==='requesting'&&attempt===lockAttempt)failStart('The browser did not grant pointer lock. Try Visible cursor, or open the app in its own tab.');},8000);
+    try {
+      const result=active.mode==='raw'?ui.trace.requestPointerLock({unadjustedMovement:true}):ui.trace.requestPointerLock();
+      active.capture.lockPromiseAPI=!!result&&typeof result.then==='function';
+      if(result&&typeof result.then==='function')await result;
+      if(attempt===lockAttempt&&phase==='requesting'&&document.pointerLockElement===ui.trace)arm();
+    } catch(error){if(attempt===lockAttempt&&phase==='requesting')failStart(`Pointer lock failed (${error.name || 'browser restriction'}). No test was recorded. Try Locked · standard or Visible cursor.`);}
+  }
+  ui.testForm.addEventListener('submit',event=>{event.preventDefault();start();});
+  document.addEventListener('pointerlockchange',()=>{
+    if(document.pointerLockElement===ui.trace){if(phase==='requesting'&&active?.mode!=='cursor')arm();else if(!active||active.mode==='cursor')document.exitPointerLock();}
+    else if(active&&active.mode!=='cursor'&&(phase==='recording'||phase==='settling'))stop('Pointer lock released');
+  });
+  document.addEventListener('pointerlockerror',()=>{if(phase==='requesting')failStart('The browser rejected mouse capture. No test was recorded. Try Locked · standard or Visible cursor.');});
+
+  function beginRecording(origin=lastCursor){
+    if(phase!=='settling')return;
+    phase='recording';active.startedAt=new Date(Date.now()-(performance.now()-startAt)).toISOString();
+    if(active.mode==='cursor'&&origin)active.capture.originClient={x:origin.x,y:origin.y};
+    setStatus('Recording · leave the mouse untouched',`${active.settings.surface} · ${active.settings.dpi?number(active.settings.dpi)+' DPI':'DPI not specified'} · ${active.modeLabel}`,'●');dirty=true;
+  }
+  function advance(now){
+    if(phase==='settling'&&now>=settleEnd)beginRecording();
+    if(phase==='recording'){
+      active.elapsedMs=Math.max(0,Math.min(now-startAt,active.settings.duration*1000));
+      if(now>=finishAt){stop('Timer complete',finishAt);return;}
+    }
+  }
+  function stop(reason='Stopped with keyboard',at=performance.now()){
+    if(!busy())return;
+    // Reconcile an elapsed settling period before saving when a timer callback was delayed.
+    if(phase==='settling'&&at>=startAt)beginRecording();
+    const wasRecording=phase==='recording',run=active;
+    lockAttempt++;clearTimeout(requestTimer);phase='idle';active=null;
+    if(wasRecording){
+      run.elapsedMs=Math.max(0,Math.min(at-startAt,run.settings.duration*1000));run.completed=reason==='Timer complete';run.stopReason=reason;
+      selected=run;runs.push(run);saveRun(run);renderHistory();
+      setStatus(run.completed?'Test complete':'Test stopped early',`${run.samples.length?number(run.samples.length)+' movement events':'No nonzero movement detected'} · ${number(run.elapsedMs/1000,1)} seconds · ${reason}`,run.samples.length?'↗':'✓');
+    }else{setStatus('Countdown cancelled','Nothing was recorded. Adjust your setup and start again.');}
+    setBusy(false);if(document.pointerLockElement===ui.trace)document.exitPointerLock();dirty=true;
+  }
+  ui.stop.addEventListener('click',()=>stop('Stopped with mouse; final movement may include reaching the button'));
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&busy()){event.preventDefault();stop('Stopped with keyboard');return;}
+    if(event.repeat||event.ctrlKey||event.metaKey||event.altKey||/^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName))return;
+    if(event.key.toLowerCase()==='s'&&!busy()){event.preventDefault();start();}
+  });
+  window.addEventListener('blur',()=>{lastCursor=null;if(busy())stop('Window lost focus');});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&busy())stop('Tab hidden');});
+  window.addEventListener('resize',()=>{lastCursor=null;if(busy())stop('Window size or display scale changed');dirty=true;});
+  document.documentElement.addEventListener('mouseleave',()=>{lastCursor=null;if(active&&active.mode==='cursor')stop('Cursor left the page');});
+  window.addEventListener('beforeunload',event=>{if(busy()||runs.some(run=>!savedIds.has(run.id))){event.preventDefault();event.returnValue='';}});
+
+  document.addEventListener('mousemove',event=>{
+    if(!event.isTrusted)return;
+    const now=performance.now();
+    const timestamp=Number.isFinite(event.timeStamp)&&event.timeStamp>0&&event.timeStamp<=now+1000?event.timeStamp:now;
+    const previous=lastCursor;
+    if(!document.pointerLockElement)lastCursor={x:event.clientX,y:event.clientY};
+    if(!active)return;
+    if(phase==='settling'&&timestamp>=startAt)beginRecording(previous);
+    if(phase!=='recording'||timestamp<startAt)return;
+    if(timestamp>=finishAt){stop('Timer complete',finishAt);return;}
+    let dx,dy;
+    if(active.mode==='cursor'){
+      if(!previous){active.capture.originClient={x:event.clientX,y:event.clientY};showMessage('No cursor baseline was available at recording start. The first position was used as the origin; repeat after moving the cursor during the settling countdown.');return;}
+      dx=event.clientX-previous.x;dy=event.clientY-previous.y;
+    }else{if(document.pointerLockElement!==ui.trace)return;dx=event.movementX;dy=event.movementY;}
+    if(Lab.addSample(active,timestamp-startAt,dx,dy))dirty=true;
+    if(active.samples.length>=Lab.SAMPLE_LIMIT)stop('100,000-sample limit reached',now);
+  },{passive:true});
+
+  function canvasContext(canvas){
+    const rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;
+    const width=Math.max(1,rect.width),height=Math.max(1,rect.height);
+    if(canvas.width!==Math.round(width*ratio)||canvas.height!==Math.round(height*ratio)){canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);}
+    const ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);return {ctx,width,height};
+  }
+  function niceStep(value){const exponent=10**Math.floor(Math.log10(Math.max(value,.00001)));const fraction=value/exponent;return (fraction<=1?1:fraction<=2?2:fraction<=5?5:10)*exponent;}
+  function drawTrace(run){
+    const {ctx,width,height}=canvasContext(ui.trace),pad=40;
+    const minX=run?.minX||0,maxX=run?.maxX||0,minY=run?.minY||0,maxY=run?.maxY||0;
+    const auto=ui.zoom.value==='auto';
+    const scale=auto?Math.min((width-pad*2)/Math.max(8,maxX-minX),(height-pad*2)/Math.max(8,maxY-minY),50):Number(ui.zoom.value);
+    const centerX=auto?(minX+maxX)/2:0,centerY=auto?(minY+maxY)/2:0;
+    const px=x=>width/2+(x-centerX)*scale,py=y=>height/2+(y-centerY)*scale,step=niceStep(45/scale);
+    ctx.lineWidth=1;ctx.font='10px Segoe UI';ctx.fillStyle='#738594';ctx.textBaseline='top';
+    const left=centerX-width/2/scale,right=centerX+width/2/scale,top=centerY-height/2/scale,bottom=centerY+height/2/scale;
+    for(let x=Math.ceil(left/step)*step;x<=right;x+=step){ctx.strokeStyle=Math.abs(x)<step/100?'#465562':'#202b33';ctx.beginPath();ctx.moveTo(px(x),0);ctx.lineTo(px(x),height);ctx.stroke();if(px(x)>24&&px(x)<width-30)ctx.fillText(number(x,2),px(x)+4,height-17);}
+    for(let y=Math.ceil(top/step)*step;y<=bottom;y+=step){ctx.strokeStyle=Math.abs(y)<step/100?'#465562':'#202b33';ctx.beginPath();ctx.moveTo(0,py(y));ctx.lineTo(width,py(y));ctx.stroke();if(py(y)>12&&py(y)<height-30)ctx.fillText(number(y,2),6,py(y)+3);}
+    if(run?.samples.length){
+      ctx.save();ctx.beginPath();ctx.rect(0,0,width,height);ctx.clip();ctx.strokeStyle='#c2f970';ctx.lineWidth=1.6;ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(px(0),py(0));
+      const stride=Math.max(1,Math.ceil(run.samples.length/6000));
+      for(let i=0;i<run.samples.length;i+=stride){const s=run.samples[i];ctx.lineTo(px(s[3]),py(s[4]));}
+      ctx.lineTo(px(run.x),py(run.y));ctx.stroke();
+      if(run.samples.length<150){ctx.fillStyle='#c2f97088';for(const s of run.samples){ctx.beginPath();ctx.arc(px(s[3]),py(s[4]),2,0,Math.PI*2);ctx.fill();}}
+      ctx.restore();
+      ctx.strokeStyle='#6ddbd6';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px(0),py(0),6,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='#c2f970';ctx.beginPath();ctx.arc(px(run.x),py(run.y),3.5,0,Math.PI*2);ctx.fill();
+    }else{ctx.strokeStyle='#6ddbd6';ctx.beginPath();ctx.arc(px(0),py(0),4,0,Math.PI*2);ctx.stroke();}
+    const clipped=!auto&&run&&(px(minX)<0||px(maxX)>width||py(minY)<0||py(maxY)>height);
+    ui.scaleLabel.textContent=`Grid: ${number(step)} ${run?.unit||'CSS px'} · ${number(scale,1)}×${clipped?' · clipped; use Auto fit':''}${run?.samples.length>6000?' · simplified drawing':''}`;
+    ui.plotEmpty.hidden=!!run?.samples.length;
+    ui.plotEmpty.style.display=run?.samples.length?'none':'flex';
+    if(!run)ui.plotEmpty.firstElementChild.textContent='A little movement tells a story.';
+    else ui.plotEmpty.firstElementChild.textContent=phase==='settling'?'Settling… movement is ignored.':'No nonzero movement recorded.';
+    ui.plotEmpty.lastElementChild.textContent=run?'Start is at (0, 0). Right is +X; down is +Y.':'Your trace will appear here.';
+  }
+  function drawTimeline(run){
+    const {ctx,width,height}=canvasContext(ui.timeline);const duration=run?.settings.duration||Number(ui.duration.value)||60;
+    const max=(run?.buckets||[]).reduce((peak,bucket)=>Math.max(peak,bucket?.travel||0),0),step=width/duration;
+    ctx.strokeStyle='#2c353e';ctx.beginPath();ctx.moveTo(0,height-13);ctx.lineTo(width,height-13);ctx.stroke();
+    const elapsed=(run?.elapsedMs||0)/1000;
+    ctx.fillStyle='#c2f97008';ctx.fillRect(0,0,Math.min(width,elapsed/duration*width),height-13);
+    ctx.fillStyle='#6ddbd6';if(max>0)for(let i=0;i<duration;i++){const value=run?.buckets[i]?.travel||0;if(!value)continue;const barHeight=Math.max(2,(height-25)*value/max);ctx.fillRect(i*step,height-13-barHeight,Math.max(.5,step-2),barHeight);}
+    ui.timelinePeak.textContent=max?`Peak: ${number(max)} ${run.unit} in one second`:'No movement recorded';ui.timelineEnd.textContent=`${duration} s`;
+  }
+  function renderReadouts(run){
+    const unit=run?.unit||'CSS px',count=run?.samples.length||0,x=run?.x||0,y=run?.y||0;
+    ui.eventCount.textContent=number(count,0);ui.travel.textContent=number(run?.travel||0);ui.net.textContent=number(Math.hypot(x,y));ui.excursion.textContent=number(run?.peak||0);
+    ui.travelUnit.textContent=`${unit} · all steps added`;ui.netUnit.textContent=`${unit} · start to finish`;ui.excursionUnit.textContent=`${unit} · peak excursion`;
+    ui.modeTag.textContent=run?.modeLabel||Lab.modeNames[ui.mode.value];ui.deltaX.textContent=signed(x);ui.deltaY.textContent=signed(y);ui.firstMove.textContent=run?.firstMs==null?'—':`${number(run.firstMs/1000,3)} s`;ui.largestStep.textContent=number(run?.largest||0);
+    ui.directionName.textContent=Lab.direction(x,y);ui.needle.style.opacity=Math.hypot(x,y)>0?'1':'0';ui.needle.style.transform=`rotate(${Math.atan2(y,x)}rad)`;
+    const max=Math.max(1,...(run?.directions||[]));
+    Lab.directions.forEach((_,i)=>{const row=ui.directionBars.children[i];row.querySelector('.bar').style.width=`${(run?.directions[i]||0)/max*100}%`;row.querySelector('b').textContent=number(run?.directions[i]||0,0);});
+    ui.eventLog.replaceChildren();
+    if(!count){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=4;td.className='empty';td.textContent=run?'No nonzero movement recorded.':'Waiting for a recording.';tr.append(td);ui.eventLog.append(tr);}
+    else for(const s of run.samples.slice(-30).reverse()){const tr=document.createElement('tr');[fmtTime(s[0]),signed(s[1]),signed(s[2]),Lab.direction(s[1],s[2])].forEach((value,i)=>{const td=document.createElement('td');td.textContent=value;if(i<3)td.className='num';tr.append(td);});ui.eventLog.append(tr);}
+    if(!run)ui.insight.textContent='Back-and-forth jitter can have zero net displacement. Total travel still captures those steps.';
+    else if(!count)ui.insight.textContent='No nonzero motion has reached this page in this run. This does not rule out movement below the browser’s resolution.';
+    else{const seconds=run.elapsedMs/1000;ui.insight.textContent=`${seconds?number(count/seconds):'—'} movement events/s · ${seconds?number(run.travel/seconds):'—'} ${unit}/s. These are browser observations, not the mouse’s polling rate.`;}
+  }
+  function render(now){
+    advance(now);
+    if(phase==='settling'){ui.timer.textContent=Math.max(0,(settleEnd-now)/1000).toFixed(1);ui.progress.style.width=`${Math.max(0,(1-(settleEnd-now)/(active.settings.settle*1000))*100)}%`;}
+    else if(phase==='recording'){ui.timer.textContent=Math.max(0,(finishAt-now)/1000).toFixed(1);ui.progress.style.width=`${(now-startAt)/(active.settings.duration*1000)*100}%`;}
+    else if(phase==='idle'){ui.timer.textContent=(selected?selected.elapsedMs/1000:Number(ui.duration.value)||60).toFixed(1);ui.progress.style.width=selected?`${selected.elapsedMs/(selected.settings.duration*1000)*100}%`:'0%';}
+    if(dirty||phase==='recording'){renderReadouts(current());drawTrace(current());drawTimeline(current());dirty=false;}
+  }
+  function frame(now){if(now-lastRender>=100){lastRender=now;render(now);}requestAnimationFrame(frame);}
+  requestAnimationFrame(frame);
+  // Timer also runs without animation frames; hidden/focus-loss events save partial tests.
+  setInterval(()=>advance(performance.now()),100);
+  ui.zoom.addEventListener('change',()=>{dirty=true;});
+  new ResizeObserver(()=>{dirty=true;}).observe(ui.trace.parentElement);
+  const shortDirections=['R','DR','D','DL','L','UL','U','UR'];
+  Lab.directions.forEach((name,i)=>{const row=document.createElement('div');row.className='direction-row';row.title=name;const label=document.createElement('span');label.textContent=shortDirections[i];const bg=document.createElement('div');bg.className='bar-bg';const bar=document.createElement('div');bar.className='bar';bg.append(bar);const count=document.createElement('b');count.textContent='0';row.append(label,bg,count);ui.directionBars.append(row);});
+
+  function renderHistory(){
+    ui.runCount.textContent=`${runs.length} run${runs.length===1?'':'s'}`;ui.runList.replaceChildren();
+    if(!runs.length){const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=13;cell.className='empty';cell.textContent='No tests yet. Try your current pad first, then change just the surface or DPI.';row.append(cell);ui.runList.append(row);}
+    runs.slice().reverse().forEach(run=>{
+      const row=document.createElement('tr');if(run===selected)row.className='selected';const s=Lab.summary(run),label=document.createElement('td'),button=document.createElement('button');button.className='select-run';button.textContent=run.settings.surface;button.disabled=busy();button.title=run.settings.notes||'Inspect this run';
+      button.addEventListener('click',()=>{if(busy())return;selected=run;setStatus('Reviewing saved test',`${run.settings.surface} · ${new Date(run.startedAt).toLocaleString()} · ${run.stopReason}`,'↗');renderHistory();dirty=true;});
+      const stamp=document.createElement('small');stamp.textContent=new Date(run.startedAt).toLocaleTimeString();label.append(button,stamp);row.append(label);
+      const values=[run.settings.dpi||'—',run.settings.connection,`${run.modeLabel} / ${run.unit}`,`${number(s.recorded_seconds,1)} s`,s.movement_events,number(s.events_per_second),number(run.travel),number(s.travel_per_second),number(s.net_distance),number(run.peak),run.completed?'Complete':'Partial'];
+      values.forEach(value=>{const td=document.createElement('td');td.textContent=value;row.append(td);});row.children[11].title=run.stopReason;
+      const removeCell=document.createElement('td'),remove=document.createElement('button');remove.className='remove-run';remove.textContent='×';remove.setAttribute('aria-label',`Delete ${run.settings.surface} test from ${new Date(run.startedAt).toLocaleTimeString()}`);remove.disabled=busy();remove.addEventListener('click',()=>{if(busy())return;if(!confirm('Delete this recorded test and its movement samples?'))return;runs=runs.filter(r=>r.id!==run.id);deleteRun(run.id);if(selected===run)selected=runs.at(-1)||null;renderHistory();setStatus('Ready for another test','Change one condition, then start a new recording.');dirty=true;});removeCell.append(remove);row.append(removeCell);ui.runList.append(row);
+    });updateExportButtons();
+  }
+  function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);}
+  const fileStamp=()=>new Date().toISOString().replace(/[:.]/g,'-');
+  ui.exportJSON.addEventListener('click',()=>{if(busy())return;download(`mouse-tests-${fileStamp()}.json`,JSON.stringify({app:'Mouse Motion Inspector browser tester',version:1,exportedAt:new Date().toISOString(),limitations:'Browser mousemove observations, not HID reports or polling-rate measurements. Locked deltas use browser-specific units; unadjusted movement is requested, not independently verified. DPI and polling rate are manually entered labels.',runs:runs.map(run=>({...run,summary:Lab.summary(run)}))},null,2),'application/json');});
+  ui.exportCSV.addEventListener('click',()=>download(`mouse-test-summary-${fileStamp()}.csv`,Lab.summaryCSV(runs),'text/csv;charset=utf-8'));
+  ui.exportEvents.addEventListener('click',()=>{if(selected)download(`mouse-events-${fileStamp()}.csv`,Lab.eventsCSV(selected),'text/csv;charset=utf-8');});
+
+  function storageMessage(){const unsaved=runs.filter(run=>!savedIds.has(run.id)).length;ui.storageStatus.textContent=!storageReady?'Opening local storage…':!storageAvailable?'Browser storage is unavailable. Tests remain in this tab only; export JSON before closing.':unsaved?`${unsaved} test(s) not yet saved to browser storage. Export JSON before closing.`:`${runs.length} test(s) saved in this browser with all samples. Export JSON for a portable backup; clearing browser data removes saved tests.`;}
+  function saveRun(run){storageMessage();if(!db)return;try{const tx=db.transaction('runs','readwrite');tx.objectStore('runs').put(run);tx.oncomplete=()=>{savedIds.add(run.id);storageMessage();};tx.onerror=()=>{storageMessage();showMessage('This run could not be saved locally (storage may be full). It is still in memory. Export JSON before closing.');};}catch{storageMessage();showMessage('Local saving failed. Export JSON before closing this tab.');}}
+  function deleteRun(id){savedIds.delete(id);if(!db){storageMessage();return;}try{const tx=db.transaction('runs','readwrite');tx.objectStore('runs').delete(id);tx.oncomplete=storageMessage;tx.onerror=()=>showMessage('The test was removed from this tab, but browser storage could not be updated. It may return after a reload.');}catch{showMessage('Browser storage could not delete the saved test.');}}
+  function initStorage(){
+    try{
+      const request=indexedDB.open('still-mouse-lab',1);
+      request.onupgradeneeded=()=>request.result.createObjectStore('runs',{keyPath:'id'});
+      request.onerror=()=>{storageReady=true;storageAvailable=false;storageMessage();};
+      request.onblocked=()=>{storageReady=true;storageAvailable=false;storageMessage();};
+      request.onsuccess=()=>{
+        db=request.result;storageAvailable=true;storageReady=true;db.onversionchange=()=>{db.close();db=null;storageAvailable=false;storageMessage();};
+        const req=db.transaction('runs','readonly').objectStore('runs').getAll();
+        req.onsuccess=()=>{
+          const existing=new Set(runs.map(r=>r.id));
+          for(const run of req.result){if(!run.id||!Array.isArray(run.samples)||!run.settings||!Array.isArray(run.directions))continue;savedIds.add(run.id);if(!existing.has(run.id))runs.push(run);}
+          runs.sort((a,b)=>a.startedAt.localeCompare(b.startedAt));if(!selected&&!busy())selected=runs.at(-1)||null;
+          for(const run of runs)if(!savedIds.has(run.id))saveRun(run);
+          renderHistory();storageMessage();dirty=true;
+          if(selected&&!busy())setStatus('Previous tests restored',`${runs.length} tests loaded from this browser. Select a run below or start another test.`,'↗');
+        };
+        req.onerror=()=>{storageAvailable=false;storageMessage();};
+      };
+    }catch{storageReady=true;storageAvailable=false;storageMessage();}
+  }
+  initStorage();storageMessage();
+})();
+</script>
+</body>
+</html>

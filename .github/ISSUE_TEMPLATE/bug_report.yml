@@ -1,0 +1,28 @@
+name: Bug report
+description: Report a reproducible problem with capture, charts or the interface.
+body:
+  - type: markdown
+    attributes:
+      value: Review recordings before uploading them. Device identifiers, screen coordinates and personal notes may be included. Do not attach secrets or private recordings.
+  - type: input
+    id: version
+    attributes:
+      label: App version and Windows version
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps, expected result and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: conditions
+    attributes:
+      label: Test conditions
+      description: Mouse model, connection, surface, DPI, polling-rate label and Windows display scaling.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Stop reason, warnings, dropped reports, screenshots, or a reviewed recording. Specify whether movement was intentional.

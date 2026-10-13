@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Understanding a recording
+    url: https://github.com/Almo7aya/mouse-motion-inspector/blob/main/docs/interpretation.md
+    about: Read the test workflow, units and attribution limits.
